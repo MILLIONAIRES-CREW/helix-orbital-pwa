@@ -1,0 +1,184 @@
+@media (max-width: 900px), (pointer: coarse) {
+  #objective {
+    left: 10px;
+    top: 10px;
+    width: min(240px, 42vw);
+    padding: 10px 12px;
+  }
+
+  #obj-title {
+    font-size: 18px;
+  }
+
+  #obj-sub {
+    font-size: 12px;
+    min-height: 0;
+  }
+
+  #topright {
+    right: 10px;
+    top: 10px;
+    gap: 6px;
+  }
+
+  #minimap {
+    width: 110px;
+    height: 110px;
+  }
+
+  .maplabel {
+    font-size: 10px;
+  }
+
+  .chip {
+    padding: 5px 9px 5px 6px;
+    font-size: 11px;
+  }
+
+  #panel {
+    right: 10px;
+    left: 10px;
+    top: auto;
+    bottom: 170px;
+    width: auto;
+    max-height: min(42vh, 360px);
+    overflow: auto;
+    padding: 14px;
+  }
+
+  #panel h2 {
+    font-size: 22px;
+  }
+
+  #prompt {
+    bottom: 168px;
+    font-size: 14px;
+    white-space: normal;
+    max-width: min(90vw, 420px);
+    text-align: center;
+  }
+
+  #captions {
+    left: 10px;
+    bottom: 210px;
+    max-width: min(70vw, 360px);
+    font-size: 14px;
+  }
+
+  body.flight #captions {
+    bottom: 150px;
+  }
+
+  #telemetry {
+    padding: 18px 10px 118px;
+  }
+
+  .tele-row {
+    gap: 8px;
+  }
+
+  .cluster {
+    gap: 8px;
+  }
+
+  .gauge {
+    min-width: 64px;
+  }
+
+  .gauge b {
+    font-size: 18px;
+  }
+
+  #t-clock {
+    font-size: 22px;
+  }
+
+  #t-phase {
+    font-size: 11px;
+  }
+
+  #timeline {
+    margin-top: 14px;
+    height: 32px;
+  }
+
+  #scorecard {
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    bottom: 10px;
+    width: auto;
+  }
+
+  #toast {
+    top: 10px;
+    max-width: 90vw;
+    font-size: 13px;
+  }
+
+  #start {
+    align-items: flex-start;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    background: linear-gradient(180deg, #040911f7, #040911e8 48%, #040911cc);
+  }
+
+  .start-inner {
+    width: min(560px, 92vw);
+    margin: max(24px, env(safe-area-inset-top)) auto 40px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  #start h1 {
+    font-size: clamp(36px, 10vw, 56px);
+  }
+
+  .lead {
+    font-size: 15px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .volume {
+    flex-wrap: wrap;
+  }
+
+  .volume input {
+    width: min(210px, 60vw);
+  }
+
+  body.flight #benchtag {
+    left: 10px;
+    top: auto;
+    bottom: 150px;
+  }
+
+  /* Keep sticks usable: lift interact prompt above action row */
+  body:not(.flight) #prompt {
+    bottom: 176px;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape),
+  (pointer: coarse) and (orientation: landscape) {
+  #objective {
+    width: min(220px, 34vw);
+  }
+
+  #minimap {
+    width: 96px;
+    height: 96px;
+  }
+
+  #panel {
+    bottom: 120px;
+    max-height: 48vh;
+  }
+
+  #telemetry {
+    padding-bottom: 96px;
+  }
+}

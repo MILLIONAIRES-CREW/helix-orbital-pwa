@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#071221" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Helix Orbital - Helix-1 Factory and Launch Site</title>
+    <meta
+      name="description"
+      content="Build the Helix-1 crewed rocket on a six-station assembly line, roll it out and fly it to orbit — playable on phone with on-screen controls."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b1b33'/%3E%3Cpath d='M11 26c0-7 10-7 10-13S11 8 11 5M21 26c0-7-10-7-10-13S21 8 21 5' stroke='%2327d3c3' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="stylesheet" crossorigin href="/assets/index-CAguAcDW.css" />
+    <link rel="stylesheet" href="/src/mobile-controls.css" />
+    <link rel="stylesheet" href="/src/phone-hud.css" />
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+
+    <div id="hud" class="hidden">
+      <section id="objective" class="card">
+        <div class="eyebrow" id="obj-eyebrow">Current objective</div>
+        <div id="obj-title">-</div>
+        <div id="obj-sub"></div>
+        <div class="build">
+          <div class="row"><span>Helix-1 build</span><b id="build-pct">0%</b></div>
+          <div class="bar"><i id="build-bar"></i></div>
+          <div id="pips"></div>
+        </div>
+      </section>
+
+      <aside id="topright">
+        <div id="mapwrap" class="card">
+          <canvas id="minimap" width="440" height="440"></canvas>
+          <div class="maplabel"><span>Site map</span><span><kbd>M</kbd> full map</span></div>
+        </div>
+        <div id="chips">
+          <div class="chip" id="chip-speed"><kbd>F</kbd><span id="chip-speed-t">Factory speed 1x</span></div>
+          <div class="chip" id="chip-view"><kbd>Tab</kbd><span id="chip-view-t">Third person</span></div>
+          <div class="chip" id="chip-sound"><kbd>V</kbd><span id="chip-sound-t">Sound on</span></div>
+          <div class="chip dim" id="chip-fps"><span id="chip-fps-t">60 fps</span></div>
+        </div>
+        <div id="cams" class="hidden">
+          <button class="cam" data-cam="1"><kbd>1</kbd>Onboard</button>
+          <button class="cam" data-cam="2"><kbd>2</kbd>Chase</button>
+          <button class="cam" data-cam="3"><kbd>3</kbd>Tracking</button>
+          <button class="cam" data-cam="4"><kbd>4</kbd>Booster</button>
+        </div>
+      </aside>
+
+      <div id="prompt" class="hidden"></div>
+      <div id="captions" class="hidden"><span class="who">Launch control</span><span id="caption-text"></span></div>
+
+      <section id="panel" class="card hidden" aria-live="polite">
+        <div class="eyebrow" id="panel-eyebrow">Station 01</div>
+        <h2 id="panel-title">Tank Fabrication</h2>
+        <p id="panel-blurb"></p>
+        <div class="status" id="panel-status">In progress</div>
+        <div class="bar big"><i id="panel-bar"></i></div>
+        <ul id="panel-steps"></ul>
+        <button id="panel-sign" class="btn primary" disabled>Sign off station</button>
+        <div class="keys"><span><kbd>E</kbd> sign off</span><span><kbd>Q</kbd> / <kbd>Esc</kbd> close</span></div>
+      </section>
+
+      <section id="telemetry" class="hidden">
+        <div class="tele-row">
+          <div class="cluster" id="tele-left">
+            <div class="tag" id="tl-tag">Stage 1</div>
+            <div class="gauge"><b id="tl-speed">0</b><span>km/h</span><em>Speed</em></div>
+            <div class="gauge"><b id="tl-alt">0.0</b><span>km</span><em>Altitude</em></div>
+          </div>
+          <div class="clock">
+            <div id="t-clock">T-00:01:00</div>
+            <div id="t-phase">Countdown</div>
+          </div>
+          <div class="cluster right" id="tele-right">
+            <div class="tag" id="tr-tag">Helix-1</div>
+            <div class="gauge"><b id="tr-speed">0</b><span>km/h</span><em>Speed</em></div>
+            <div class="gauge"><b id="tr-alt">0.0</b><span>km</span><em>Altitude</em></div>
+            <div class="gauge"><b id="tr-down">0.0</b><span>km</span><em>Downrange</em></div>
+          </div>
+        </div>
+        <div id="timeline"><div id="tl-fill"></div><div id="tl-events"></div></div>
+      </section>
+
+      <div id="fullmap" class="hidden">
+        <div class="card mapcard">
+          <div class="row"><span class="eyebrow">Helix Orbital launch site</span><span><kbd>M</kbd> close</span></div>
+          <canvas id="bigmap" width="1400" height="900"></canvas>
+          <div class="legend">
+            <span><i class="sw you"></i>You</span><span><i class="sw st-locked"></i>Locked</span><span><i class="sw st-run"></i>Working</span><span><i class="sw st-ready"></i>Ready to sign off</span><span><i class="sw st-done"></i>Signed off</span><span><i class="sw crew"></i>Engineers</span><span><i class="sw veh"></i>Vehicles</span>
+          </div>
+        </div>
+      </div>
+
+      <section id="scorecard" class="card hidden"></section>
+      <div id="toast" class="hidden"></div>
+      <div id="benchtag" class="hidden">Benchmark mode - seed 2026 - autopilot</div>
+    </div>
+
+    <div id="start">
+      <div class="start-inner">
+        <div class="brand">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 58c0-16 20-16 20-28S22 20 22 8M42 58c0-16-20-16-20-28S42 20 42 8" stroke="#f4f6f8" stroke-width="4.5" fill="none" stroke-linecap="round"/><ellipse cx="32" cy="33" rx="29" ry="10" transform="rotate(-24 32 33)" stroke="#27d3c3" stroke-width="3" fill="none" stroke-dasharray="74 14 60 200"/><circle cx="32" cy="4.5" r="2.6" fill="#27d3c3"/></svg>
+          <div><b>HELIX</b><span>ORBITAL</span></div>
+        </div>
+        <h1>Build Helix-1.<br />Fly it to orbit.</h1>
+        <p class="lead">You are a Helix Orbital engineer. Walk the assembly line, sign off six stations, roll the rocket to the pad, ride the tower and launch - then watch the booster come home.</p>
+        <div class="actions">
+          <button id="btn-start" class="btn primary" disabled>Loading site...</button>
+          <button id="btn-bench" class="btn" disabled>Run benchmark</button>
+        </div>
+        <label class="volume" for="vol"><span>Sound volume</span><input id="vol" type="range" min="0" max="100" step="1" value="80" /><b id="vol-val">80%</b></label>
+        <div class="controls desktop-controls">
+          <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>Move</span></div>
+          <div><kbd>Mouse</kbd><span>Look around</span></div>
+          <div><kbd>Shift</kbd><span>Sprint</span></div>
+          <div><kbd>E</kbd><span>Interact / sign off</span></div>
+          <div><kbd>Tab</kbd><span>First / third person</span></div>
+          <div><kbd>M</kbd><span>Full site map</span></div>
+          <div><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd><span>Flight cameras</span></div>
+          <div><kbd>F</kbd><span>Time-lapse speed</span></div>
+          <div><kbd>V</kbd><span>Mute / unmute sound</span></div>
+        </div>
+        <div class="controls touch-controls-legend">
+          <div><span class="touch-pill">Left stick</span><span>Move</span></div>
+          <div><span class="touch-pill">Right pad</span><span>Look</span></div>
+          <div><span class="touch-pill">E</span><span>Interact / sign off</span></div>
+          <div><span class="touch-pill">Sprint</span><span>Hold to run</span></div>
+          <div><span class="touch-pill">Map / View / Speed</span><span>Quick actions</span></div>
+          <div><span class="touch-pill">Landscape</span><span>Best for dual sticks</span></div>
+        </div>
+        <p class="fine" id="load-note">Generating textures, geometry and sound in your browser - nothing is downloaded.</p>
+        <p class="fine touch-note">On phone, on-screen controls appear after you start. Add to Home Screen for the full PWA.</p>
+      </div>
+    </div>
+
+    <div id="mobile-controls" class="hidden" aria-hidden="true">
+      <div id="stick" class="stick" aria-label="Move">
+        <div class="stick-base">
+          <div class="stick-knob"></div>
+        </div>
+      </div>
+      <div id="look-pad" class="look-pad" aria-label="Look"></div>
+      <div class="mobile-actions">
+        <button type="button" class="mbtn" data-code="KeyE" data-mode="tap">E</button>
+        <button type="button" class="mbtn hold" data-code="ShiftLeft" data-mode="hold">Sprint</button>
+        <button type="button" class="mbtn" data-code="KeyM" data-mode="tap">Map</button>
+        <button type="button" class="mbtn" data-code="Tab" data-mode="tap">View</button>
+        <button type="button" class="mbtn" data-code="KeyF" data-mode="tap">Speed</button>
+        <button type="button" class="mbtn" data-code="KeyV" data-mode="tap">Mute</button>
+        <button type="button" class="mbtn" data-code="KeyQ" data-mode="tap">Close</button>
+      </div>
+      <div class="mobile-cams">
+        <button type="button" class="mbtn cam-btn" data-code="Digit1" data-mode="tap">1</button>
+        <button type="button" class="mbtn cam-btn" data-code="Digit2" data-mode="tap">2</button>
+        <button type="button" class="mbtn cam-btn" data-code="Digit3" data-mode="tap">3</button>
+        <button type="button" class="mbtn cam-btn" data-code="Digit4" data-mode="tap">4</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/mobile-controls.js"></script>
+    <script type="module" crossorigin src="/assets/index-77PWdcXc.js"></script>
+  </body>
+</html>
